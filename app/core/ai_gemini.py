@@ -1,4 +1,4 @@
-import google.generativeai as genai
+from google import genai
 from app.core.ai_base import AIProvider
 from app.core.config import settings
 from typing import Dict
@@ -10,8 +10,8 @@ class GeminiAI(AIProvider):
         if not settings.GEMINI_API_KEY:
             raise ValueError("GEMINI_API_KEY not configured")
         
-        genai.configure(api_key=settings.GEMINI_API_KEY.get_secret_value())
-        self.model = genai.GenerativeModel("gemini-2.0-flash-exp")
+        self.client = genai.Client(api_key=settings.GEMINI_API_KEY.get_secret_value())
+        self.model_name = "gemini-2.0-flash-exp"
     
     async def classify_photo(self, image_bytes: bytes) -> Dict:
         prompt = """
@@ -27,10 +27,13 @@ class GeminiAI(AIProvider):
         Reasoning: [brief explanation]
         """
         
-        response = self.model.generate_content([
-            prompt,
-            {"mime_type": "image/jpeg", "data": image_bytes}
-        ])
+        response = self.client.models.generate_content(
+            model=self.model_name,
+            contents=[
+                prompt,
+                {"inline_data": {"mime_type": "image/jpeg", "data": image_bytes}}
+            ]
+        )
         
         return self._parse_classification_response(response.text)
     
@@ -49,26 +52,35 @@ class GeminiAI(AIProvider):
         Fat: [grams]
         """
         
-        response = self.model.generate_content([
-            prompt,
-            {"mime_type": "image/jpeg", "data": image_bytes}
-        ])
+        response = self.client.models.generate_content(
+            model=self.model_name,
+            contents=[
+                prompt,
+                {"inline_data": {"mime_type": "image/jpeg", "data": image_bytes}}
+            ]
+        )
         
         return self._parse_food_response(response.text)
     
     async def chat(self, user_message: str, context: str | None = None) -> str:
-        system_prompt = """
+        system_instruction = """
         You are a professional fitness and nutrition advisor.
         Provide helpful, evidence-based advice about health, nutrition, and fitness.
         Be encouraging and supportive. Keep responses concise (2-3 sentences).
         """
         
-        full_prompt = f"{system_prompt}\n\n"
+        full_prompt = user_message
         if context:
-            full_prompt += f"User context: {context}\n\n"
-        full_prompt += f"User: {user_message}\nAssistant:"
+            full_prompt = f"User context: {context}\n\n{user_message}"
         
-        response = self.model.generate_content(full_prompt)
+        response = self.client.models.generate_content(
+            model=self.model_name,
+            contents=full_prompt,
+            config={
+                "system_instruction": system_instruction
+            }
+        )
+        
         return response.text
     
     def _parse_classification_response(self, response_text: str) -> Dict:
