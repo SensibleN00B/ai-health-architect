@@ -1,5 +1,5 @@
 from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from aiogram.filters import CommandStart
 from app.core.ai import ai_client
 from app.db import AsyncSessionLocal, User, Meal, Workout, HealthLog
@@ -31,6 +31,21 @@ async def cmd_start(message: Message):
         "і я все проаналізую!\n\n"
         "Доступні команди:\n"
         "/start - Початок роботи"
+    )
+
+
+@router.message(F.text == "/webapp")
+async def cmd_webapp(message: Message):
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(
+            text="🏥 Open Health App",
+            web_app=WebAppInfo(url="http://localhost:8000")
+        )]
+    ])
+    
+    await message.answer(
+        "📱 Click the button below to open your Health Dashboard!",
+        reply_markup=keyboard
     )
 
 

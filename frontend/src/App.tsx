@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useTelegramWebApp } from './hooks/useTelegramWebApp';
 import Dashboard from './pages/Dashboard';
 import FoodLog from './pages/FoodLog';
 import Workouts from './pages/Workouts';
 import './index.css';
 
 function App() {
+  const { webApp: _webApp, user: _user } = useTelegramWebApp();
   const [currentPage, setCurrentPage] = useState<'dashboard' | 'food' | 'workouts'>('dashboard');
 
   const pages = {
@@ -26,8 +28,8 @@ function App() {
           <button
             onClick={() => setCurrentPage('dashboard')}
             className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-all ${currentPage === 'dashboard'
-                ? 'text-teal-500'
-                : 'text-teal-300/60 hover:text-teal-300'
+              ? 'text-teal-500'
+              : 'text-teal-300/60 hover:text-teal-300'
               }`}
           >
             <span className="text-2xl">📊</span>
@@ -37,8 +39,8 @@ function App() {
           <button
             onClick={() => setCurrentPage('food')}
             className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-all ${currentPage === 'food'
-                ? 'text-teal-500'
-                : 'text-teal-300/60 hover:text-teal-300'
+              ? 'text-teal-500'
+              : 'text-teal-300/60 hover:text-teal-300'
               }`}
           >
             <span className="text-2xl">🍽️</span>
@@ -48,8 +50,8 @@ function App() {
           <button
             onClick={() => setCurrentPage('workouts')}
             className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-all ${currentPage === 'workouts'
-                ? 'text-teal-500'
-                : 'text-teal-300/60 hover:text-teal-300'
+              ? 'text-teal-500'
+              : 'text-teal-300/60 hover:text-teal-300'
               }`}
           >
             <span className="text-2xl">💪</span>
