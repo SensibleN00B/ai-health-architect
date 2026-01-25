@@ -1,4 +1,4 @@
-import { Meal } from '../types';
+import type { Meal } from '../types';
 
 interface Props {
     meal: Meal;

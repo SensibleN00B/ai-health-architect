@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import StatCard from '../components/StatCard';
 import CaloriesChart from '../components/CaloriesChart';
 import MealCard from '../components/MealCard';

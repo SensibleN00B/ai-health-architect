@@ -1,4 +1,4 @@
-import { StatCard as StatCardType } from '../types';
+import type { StatCard as StatCardType } from '../types';
 
 interface Props {
     stat: StatCardType;

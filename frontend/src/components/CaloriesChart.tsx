@@ -1,5 +1,5 @@
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
-import { DayCalories } from '../types';
+import type { DayCalories } from '../types';
 
 interface Props {
     data: DayCalories[];

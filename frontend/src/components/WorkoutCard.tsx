@@ -1,4 +1,4 @@
-import { Workout } from '../types';
+import type { Workout } from '../types';
 
 interface Props {
     workout: Workout;
