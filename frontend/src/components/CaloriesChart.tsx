@@ -21,7 +21,7 @@ export default function CaloriesChart({ data }: Props) {
                         tick={{ fill: '#6BA3BE', fontSize: 12 }}
                     />
                     <Bar dataKey="calories" radius={[8, 8, 0, 0]}>
-                        {data.map((entry, index) => (
+                        {data.map((_, index) => (
                             <Cell key={`cell-${index}`} fill="#0C969C" />
                         ))}
                     </Bar>

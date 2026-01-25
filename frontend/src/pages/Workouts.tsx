@@ -56,7 +56,7 @@ export default function Workouts() {
 
             {/* Workout Timeline */}
             <div>
-                {workouts.map((workout, index) => (
+                {workouts.map((workout) => (
                     <WorkoutCard key={workout.id} workout={workout} />
                 ))}
             </div>
