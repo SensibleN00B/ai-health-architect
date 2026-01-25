@@ -1,4 +1,5 @@
 import pytest
+import pytest_asyncio
 import asyncio
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 
@@ -10,7 +11,7 @@ def event_loop():
     loop.close()
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def test_db_engine():
     engine = create_async_engine(
         "sqlite+aiosqlite:///:memory:",
@@ -20,7 +21,7 @@ async def test_db_engine():
     await engine.dispose()
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def test_db_session(test_db_engine):
     async_session = async_sessionmaker(
         test_db_engine, class_=AsyncSession, expire_on_commit=False
