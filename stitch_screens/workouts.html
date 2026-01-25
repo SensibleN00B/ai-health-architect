@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Teal Workout Tracking</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0c959d",
+                        "background-light": "#f6f8f8",
+                        "background-dark": "#031716",
+                        "card-gradient-start": "#032F30",
+                        "card-gradient-end": "#0A7075",
+                        "accent-cyan": "#6BA3BE",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-card {
+            background: linear-gradient(135deg, rgba(3, 47, 48, 0.8) 0%, rgba(10, 112, 117, 0.6) 100%);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .teal-shadow {
+            box-shadow: 0 10px 25px -5px rgba(12, 149, 157, 0.4);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen text-slate-900 dark:text-white font-display">
+<!-- Top App Bar -->
+<div class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+<div class="flex items-center p-4 pb-2 justify-between">
+<div class="flex size-12 shrink-0 items-center justify-start">
+<button class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-2xl">arrow_back_ios_new</span>
+</button>
+</div>
+<h2 class="text-lg font-extrabold leading-tight tracking-tight flex-1 text-center">Workouts</h2>
+<div class="flex w-12 items-center justify-end">
+<button class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-2xl">settings</span>
+</button>
+</div>
+</div>
+</div>
+<main class="max-w-md mx-auto pb-24">
+<!-- Stats Summary Glass Card -->
+<div class="px-4 py-6">
+<div class="glass-card rounded-lg p-6 teal-shadow flex flex-col gap-6">
+<div>
+<p class="text-accent-cyan text-sm font-semibold uppercase tracking-wider mb-1">Weekly Overview</p>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-extrabold text-white tracking-tight">4</span>
+<span class="text-xl font-medium text-white/80">workouts</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-1">
+<p class="text-white/60 text-sm font-medium">Total time</p>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-accent-cyan text-lg">schedule</span>
+<p class="text-white text-lg font-bold">3h 20m</p>
+</div>
+<p class="text-primary text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_up</span> +10%
+                        </p>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-white/60 text-sm font-medium">Calories burned</p>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-accent-cyan text-lg">local_fire_department</span>
+<p class="text-white text-lg font-bold">1,250</p>
+</div>
+<p class="text-primary text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_up</span> +5%
+                        </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Section Header -->
+<div class="px-4 pt-4">
+<h3 class="text-lg font-bold leading-tight tracking-tight dark:text-white">Recent Activity</h3>
+</div>
+<!-- Timeline -->
+<div class="px-4 py-4">
+<div class="relative">
+<!-- Vertical Connecting Line -->
+<div class="absolute left-[23px] top-6 bottom-6 w-[2px] bg-primary/30"></div>
+<!-- Timeline Items -->
+<div class="space-y-8">
+<!-- Morning Run -->
+<div class="relative grid grid-cols-[48px_1fr] gap-x-4 items-start">
+<div class="z-10 flex size-12 items-center justify-center rounded-full bg-primary text-white teal-shadow">
+<span class="material-symbols-outlined">directions_run</span>
+</div>
+<div class="bg-white/5 dark:bg-white/5 rounded-lg p-4 border border-white/5">
+<div class="flex justify-between items-start mb-1">
+<p class="text-white text-base font-bold">Morning Run</p>
+<span class="text-xs text-white/40 font-medium">Today, 08:30 AM</span>
+</div>
+<div class="flex gap-4">
+<div class="flex flex-col">
+<p class="text-accent-cyan text-lg font-bold">5.2 <span class="text-xs font-normal opacity-70">km</span></p>
+<p class="text-white/40 text-[10px] uppercase font-bold">Distance</p>
+</div>
+<div class="w-px h-8 bg-white/10"></div>
+<div class="flex flex-col">
+<p class="text-accent-cyan text-lg font-bold">35 <span class="text-xs font-normal opacity-70">min</span></p>
+<p class="text-white/40 text-[10px] uppercase font-bold">Duration</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Weightlifting -->
+<div class="relative grid grid-cols-[48px_1fr] gap-x-4 items-start">
+<div class="z-10 flex size-12 items-center justify-center rounded-full bg-primary text-white teal-shadow">
+<span class="material-symbols-outlined">fitness_center</span>
+</div>
+<div class="bg-white/5 dark:bg-white/5 rounded-lg p-4 border border-white/5">
+<div class="flex justify-between items-start mb-1">
+<p class="text-white text-base font-bold">Weightlifting</p>
+<span class="text-xs text-white/40 font-medium">Yesterday, 06:15 PM</span>
+</div>
+<div class="flex gap-4">
+<div class="flex flex-col">
+<p class="text-accent-cyan text-lg font-bold">45 <span class="text-xs font-normal opacity-70">min</span></p>
+<p class="text-white/40 text-[10px] uppercase font-bold">Duration</p>
+</div>
+<div class="w-px h-8 bg-white/10"></div>
+<div class="flex flex-col">
+<p class="text-accent-cyan text-lg font-bold">320 <span class="text-xs font-normal opacity-70">kcal</span></p>
+<p class="text-white/40 text-[10px] uppercase font-bold">Burned</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Evening Cycling -->
+<div class="relative grid grid-cols-[48px_1fr] gap-x-4 items-start">
+<div class="z-10 flex size-12 items-center justify-center rounded-full bg-primary text-white teal-shadow">
+<span class="material-symbols-outlined">directions_bike</span>
+</div>
+<div class="bg-white/5 dark:bg-white/5 rounded-lg p-4 border border-white/5">
+<div class="flex justify-between items-start mb-1">
+<p class="text-white text-base font-bold">Evening Cycling</p>
+<span class="text-xs text-white/40 font-medium">May 15, 07:00 PM</span>
+</div>
+<div class="flex gap-4">
+<div class="flex flex-col">
+<p class="text-accent-cyan text-lg font-bold">12.4 <span class="text-xs font-normal opacity-70">km</span></p>
+<p class="text-white/40 text-[10px] uppercase font-bold">Distance</p>
+</div>
+<div class="w-px h-8 bg-white/10"></div>
+<div class="flex flex-col">
+<p class="text-accent-cyan text-lg font-bold">50 <span class="text-xs font-normal opacity-70">min</span></p>
+<p class="text-white/40 text-[10px] uppercase font-bold">Duration</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button -->
+<div class="fixed bottom-8 right-6">
+<button class="flex size-14 items-center justify-center rounded-full bg-primary text-white teal-shadow hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+<!-- Navigation Bar (iOS Style) -->
+<div class="fixed bottom-0 left-0 right-0 bg-background-light/80 dark:bg-background-dark/95 backdrop-blur-xl border-t border-white/5 px-6 pb-6 pt-3">
+<div class="max-w-md mx-auto flex justify-between items-center">
+<button class="flex flex-col items-center gap-1 text-white/40">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">exercise</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Workouts</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-white/40">
+<span class="material-symbols-outlined">nutrition</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Nutrition</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-white/40">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Profile</span>
+</button>
+</div>
+</div>
+</body></html>
