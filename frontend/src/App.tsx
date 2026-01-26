@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useTelegramWebApp } from './hooks/useTelegramWebApp';
-import { LayoutDashboard, Utensils, Dumbbell, User, MessageSquare } from 'lucide-react';
 import AIChat from './pages/AIChat';
 import Dashboard from './pages/Dashboard';
 import FoodLog from './pages/FoodLog';
@@ -20,64 +19,50 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-teal-950">
+    <div className="min-h-screen bg-gradient-premium font-display text-white">
       {/* Main Content */}
-      <div className="max-w-md mx-auto">
+      <div className="w-full h-full pb-24">
         {pages[currentPage]}
       </div>
 
-      {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-teal-900/80 backdrop-blur-xl border-t border-teal-700/30 safe-area-bottom z-50">
-        <div className="max-w-md mx-auto px-2 py-2">
-          <div className="grid grid-cols-5 items-center">
-            <NavButton
-              active={currentPage === 'dashboard'}
-              onClick={() => setCurrentPage('dashboard')}
-              icon={LayoutDashboard}
-              label="Home"
-            />
-            <NavButton
-              active={currentPage === 'food'}
-              onClick={() => setCurrentPage('food')}
-              icon={Utensils}
-              label="Food"
-            />
-            <NavButton
-              active={currentPage === 'chat'}
-              onClick={() => setCurrentPage('chat')}
-              icon={MessageSquare}
-              label="AI Chat"
-            />
-            <NavButton
-              active={currentPage === 'workouts'}
-              onClick={() => setCurrentPage('workouts')}
-              icon={Dumbbell}
-              label="Gym"
-            />
-            <NavButton
-              active={currentPage === 'profile'}
-              onClick={() => setCurrentPage('profile')}
-              icon={User}
-              label="Profile"
-            />
-          </div>
-        </div>
-      </nav>
-    </div>
-  );
-}
+      {/* Sticky Bottom Navigation (iOS style) */}
+      <div className="fixed bottom-0 left-0 right-0 glass-card border-t border-white/10 px-8 py-4 flex justify-between items-center rounded-t-3xl z-50">
+        <button
+          className={`${currentPage === 'dashboard' ? 'text-primary' : 'text-white/40'}`}
+          onClick={() => setCurrentPage('dashboard')}
+        >
+          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>grid_view</span>
+        </button>
 
-// Helper Component for Nav Items
-function NavButton({ active, onClick, icon: Icon, label }: any) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex flex-col items-center gap-1 py-1 rounded-xl transition-all ${active ? 'text-teal-400' : 'text-teal-400/50 hover:text-teal-400/80'
-        }`}
-    >
-      <Icon size={24} strokeWidth={active ? 2.5 : 2} />
-      <span className="text-[10px] font-medium">{label}</span>
-    </button>
+        <button
+          className={`${currentPage === 'workouts' ? 'text-primary' : 'text-white/40'}`}
+          onClick={() => setCurrentPage('workouts')}
+        >
+          <span className="material-symbols-outlined">fitness_center</span>
+        </button>
+
+        <button
+          className={`${currentPage === 'food' ? 'text-primary' : 'text-white/40'}`}
+          onClick={() => setCurrentPage('food')}
+        >
+          <span className="material-symbols-outlined">restaurant</span>
+        </button>
+
+        <button
+          className={`${currentPage === 'chat' ? 'text-primary' : 'text-white/40'}`}
+          onClick={() => setCurrentPage('chat')}
+        >
+          <span className="material-symbols-outlined">mark_chat_unread</span>
+        </button>
+
+        <button
+          className={`${currentPage === 'profile' ? 'text-primary' : 'text-white/40'}`}
+          onClick={() => setCurrentPage('profile')}
+        >
+          <span className="material-symbols-outlined">person</span>
+        </button>
+      </div>
+    </div>
   );
 }
 
