@@ -11,3 +11,13 @@ app/web/
 *.log
 .coverage
 htmlcov/
+docs/
+stitch_dashboard.html
+stitch_screens/
+frontend/.env
+frontend/.env.*
+.vscode/
+.idea/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
