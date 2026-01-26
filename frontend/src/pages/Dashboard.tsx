@@ -1,8 +1,9 @@
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import StatCard from '../components/StatCard';
 import type { StatCard as StatCardType } from '../types';
 import CaloriesChart from '../components/CaloriesChart';
-import MealCard from '../components/MealCard';
 import { useTelegramWebApp } from '../hooks/useTelegramWebApp';
+import WaterTracker from '../components/WaterTracker';
 
 export default function Dashboard() {
     const { user } = useTelegramWebApp();
@@ -38,23 +39,6 @@ export default function Dashboard() {
         { day: "Sun", calories: 1850 },
     ];
 
-    const recentMeals = [
-        {
-            id: 1,
-            name: "Grilled Chicken Salad",
-            time: "12:30 PM",
-            calories: 450,
-            macros: { protein: 35, carbs: 25, fat: 18 }
-        },
-        {
-            id: 2,
-            name: "Oatmeal with Berries",
-            time: "8:00 AM",
-            calories: 320,
-            macros: { protein: 12, carbs: 45, fat: 6 }
-        }
-    ];
-
     return (
         <div className="pb-24 pt-4 px-4 space-y-6 animate-fade-in">
             {/* Header */}
@@ -86,40 +70,54 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            {/* Weight Chart (New) */}
-            <div className="glass-card p-4">
-                <h2 className="text-lg font-semibold text-white mb-4">Weight Trend</h2>
-                <div className="h-32 w-full flex items-end justify-between gap-1 px-2">
-                    {[76.2, 76.0, 75.9, 75.8, 75.8, 75.6, 75.5].map((w, i) => (
-                        <div key={i} className="flex flex-col items-center gap-1 w-full">
-                            <div className="w-full bg-teal-500/20 rounded-t-sm relative group h-24 flex items-end">
-                                <div
-                                    style={{ height: `${((w - 74) / 4) * 100}%` }}
-                                    className="w-full bg-teal-500 rounded-t-sm transition-all group-hover:bg-teal-400"
-                                ></div>
-                                {/* Tooltip */}
-                                <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-teal-900 text-[10px] px-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                                    {w}kg
-                                </div>
-                            </div>
-                            <span className="text-[10px] text-teal-300/40">
-                                {['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}
-                            </span>
-                        </div>
-                    ))}
-                </div>
-            </div>
+            {/* Water Tracker */}
+            <WaterTracker />
 
-            {/* Recent Meals */}
-            <div>
-                <div className="flex justify-between items-center mb-3">
-                    <h2 className="text-lg font-semibold text-white">Recent Meals</h2>
-                    <button className="text-teal-400 text-xs font-medium hover:text-teal-300">View All</button>
-                </div>
-                <div className="space-y-3">
-                    {recentMeals.map(meal => (
-                        <MealCard key={meal.id} meal={meal} />
-                    ))}
+            {/* Weight Trend Chart (Replaces Recent Meals) */}
+            <div className="glass-card p-4">
+                <h2 className="text-lg font-semibold text-white mb-4">Weight Progress</h2>
+                <div className="h-64 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={[
+                            { date: '1 Jan', weight: 76.5 },
+                            { date: '5 Jan', weight: 76.2 },
+                            { date: '10 Jan', weight: 76.0 },
+                            { date: '15 Jan', weight: 75.8 },
+                            { date: '20 Jan', weight: 75.6 },
+                            { date: '25 Jan', weight: 75.5 },
+                        ]}>
+                            <defs>
+                                <linearGradient id="colorWeight" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#2dd4bf" stopOpacity={0.3} />
+                                    <stop offset="95%" stopColor="#2dd4bf" stopOpacity={0} />
+                                </linearGradient>
+                            </defs>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#115e59" vertical={false} />
+                            <XAxis
+                                dataKey="date"
+                                stroke="#5eead4"
+                                fontSize={12}
+                                tickLine={false}
+                                axisLine={false}
+                            />
+                            <YAxis
+                                domain={['dataMin - 1', 'dataMax + 1']}
+                                hide={true}
+                            />
+                            <Tooltip
+                                contentStyle={{ backgroundColor: '#134e4a', borderColor: '#2dd4bf', borderRadius: '8px' }}
+                                itemStyle={{ color: '#fff' }}
+                            />
+                            <Area
+                                type="monotone"
+                                dataKey="weight"
+                                stroke="#2dd4bf"
+                                strokeWidth={3}
+                                fillOpacity={1}
+                                fill="url(#colorWeight)"
+                            />
+                        </AreaChart>
+                    </ResponsiveContainer>
                 </div>
             </div>
         </div>
