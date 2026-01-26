@@ -62,18 +62,16 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            {/* Weekly Calories Chart */}
-            <div className="glass-card p-4">
-                <h2 className="text-lg font-semibold text-white mb-4">Weekly Calories</h2>
-                <div className="h-48 w-full">
-                    <CaloriesChart data={weeklyCalories} />
-                </div>
+            {/* Weekly Calories Chart - Clean Wrapper */}
+            <div className="h-48 w-full -mx-2">
+                {/* Chart component handles its own layout now, or we wrap it minimally */}
+                <CaloriesChart data={weeklyCalories} />
             </div>
 
             {/* Water Tracker */}
             <WaterTracker />
 
-            {/* Weight Trend Chart (Replaces Recent Meals) */}
+            {/* Weight Trend Chart */}
             <div className="glass-card p-4">
                 <h2 className="text-lg font-semibold text-white mb-4">Weight Progress</h2>
                 <div className="h-64 w-full">
