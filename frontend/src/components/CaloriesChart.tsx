@@ -1,4 +1,4 @@
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, LabelList } from 'recharts';
 import type { DayCalories } from '../types';
 
 interface Props {
@@ -21,6 +21,13 @@ export default function CaloriesChart({ data }: Props) {
                         tick={{ fill: '#6BA3BE', fontSize: 12 }}
                     />
                     <Bar dataKey="calories" radius={[8, 8, 0, 0]}>
+                        <LabelList
+                            dataKey="calories"
+                            position="top"
+                            fill="#6BA3BE"
+                            fontSize={10}
+                            formatter={(value: any) => value}
+                        />
                         {data.map((_, index) => (
                             <Cell key={`cell-${index}`} fill="#0C969C" />
                         ))}
