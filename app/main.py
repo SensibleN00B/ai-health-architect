@@ -3,8 +3,11 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
+from app.api.routes import router as api_router
 
 app = FastAPI(title="AI Health Architect")
+
+app.include_router(api_router)
 
 app.add_middleware(
     CORSMiddleware,
