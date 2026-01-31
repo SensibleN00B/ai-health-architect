@@ -148,3 +148,119 @@ class GeminiAI(AIProvider):
                     pass
         
         return result
+    
+    async def analyze_workout_image(self, image_bytes: bytes) -> Dict:
+        prompt = """
+        Analyze this workout-related image:
+        1. Activity type (running, cycling, gym, yoga, etc.)
+        2. Duration (in minutes)
+        3. Distance (in km)
+        4. Calories burned
+        5. Other metrics (pace, heart rate, etc.)
+        
+        Return ONLY in this exact format:
+        Activity: [type]
+        Duration: [minutes (integer)]
+        Distance: [km (float)]
+        Calories: [number (float)]
+        Metrics: [json dict of other data]
+        """
+        
+        response = self.client.models.generate_content(
+            model=self.model_name,
+            contents=[
+                prompt,
+                {"inline_data": {"mime_type": "image/jpeg", "data": image_bytes}}
+            ]
+        )
+        
+        return self._parse_workout_response(response.text)
+
+    async def analyze_health_image(self, image_bytes: bytes) -> Dict:
+        prompt = """
+        Analyze this health/progress image:
+        1. Category (weight, body measurements, progress photo, etc.)
+        2. Extract any visible numbers/metrics
+        3. Provide description
+        
+        Return ONLY in this exact format:
+        Category: [type]
+        Data: [json dict of extracted numbers]
+        Description: [brief summary]
+        """
+        
+        response = self.client.models.generate_content(
+            model=self.model_name,
+            contents=[
+                prompt,
+                {"inline_data": {"mime_type": "image/jpeg", "data": image_bytes}}
+            ]
+        )
+        
+        return self._parse_health_response(response.text)
+
+    def _parse_workout_response(self, response_text: str) -> Dict:
+        result = {
+            "activity": "unknown",
+            "duration_minutes": 0,
+            "distance_km": 0.0,
+            "calories": 0.0,
+            "metrics": {}
+        }
+        
+        lines = response_text.strip().split("\n")
+        for line in lines:
+            line = line.strip()
+            if line.startswith("Activity:"):
+                result["activity"] = line.replace("Activity:", "").strip()
+            elif line.startswith("Duration:"):
+                try:
+                    nums = re.findall(r'\d+', line)
+                    if nums: result["duration_minutes"] = int(nums[0])
+                except: pass
+            elif line.startswith("Distance:"):
+                try:
+                    nums = re.findall(r'\d+\.?\d*', line)
+                    if nums: result["distance_km"] = float(nums[0])
+                except: pass
+            elif line.startswith("Calories:"):
+                try:
+                    nums = re.findall(r'\d+\.?\d*', line)
+                    if nums: result["calories"] = float(nums[0])
+                except: pass
+            elif line.startswith("Metrics:"):
+                 try:
+                     metrics_str = line.replace("Metrics:", "").strip()
+                     if metrics_str.startswith("{") and metrics_str.endswith("}"):
+                         import json
+                         result["metrics"].update(json.loads(metrics_str))
+                 except: pass
+                 
+        if "pace" in response_text.lower() and "pace" not in result["metrics"]:
+            pace_match = re.search(r'pace[\"\'\s:]+([\d:min/km]+)', response_text, re.IGNORECASE)
+            if pace_match:
+                 result["metrics"]["pace"] = pace_match.group(1).strip('"\'')
+        
+        return result
+
+    def _parse_health_response(self, response_text: str) -> Dict:
+        result = {
+            "category": "unknown",
+            "data": {},
+            "description": ""
+        }
+        
+        lines = response_text.strip().split("\n")
+        for line in lines:
+            line = line.strip()
+            if line.startswith("Category:"):
+                result["category"] = line.replace("Category:", "").strip()
+            elif line.startswith("Description:"):
+                result["description"] = line.replace("Description:", "").strip()
+                
+        if "weight" in response_text.lower():
+             weight_match = re.search(r'weight[:\s]+([\d.]+)', response_text, re.IGNORECASE)
+             if weight_match:
+                 result["data"]["weight"] = float(weight_match.group(1))
+
+        return result

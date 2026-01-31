@@ -34,6 +34,34 @@ class AIProvider(ABC):
         pass
     
     @abstractmethod
+    async def analyze_workout_image(self, image_bytes: bytes) -> Dict:
+        """
+        Analyze workout image.
+        Returns:
+            {
+                "activity": str,
+                "duration_minutes": int,
+                "distance_km": float,
+                "calories": float,
+                "metrics": dict
+            }
+        """
+        pass
+
+    @abstractmethod
+    async def analyze_health_image(self, image_bytes: bytes) -> Dict:
+        """
+        Analyze health/progress image.
+        Returns:
+             {
+                "category": str,
+                "data": dict,
+                "description": str
+            }
+        """
+        pass
+    
+    @abstractmethod
     async def chat(self, user_message: str, context: str | None = None) -> str:
         """
         General health advice chat.
