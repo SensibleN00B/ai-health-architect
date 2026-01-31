@@ -1,21 +1,33 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTelegramWebApp } from './hooks/useTelegramWebApp';
+import { users } from './services/api';
 import AIChat from './pages/AIChat';
 import Dashboard from './pages/Dashboard';
 import FoodLog from './pages/FoodLog';
 import Workouts from './pages/Workouts';
+import Profile from './pages/Profile';
 import './index.css';
 
 function App() {
-  const { webApp: _webApp, user: _user } = useTelegramWebApp();
+  const { webApp: _webApp, user } = useTelegramWebApp();
   const [currentPage, setCurrentPage] = useState<'dashboard' | 'food' | 'chat' | 'workouts' | 'profile'>('dashboard');
+
+  useEffect(() => {
+    if (user) {
+      users.sync({
+        telegram_id: user.id,
+        username: user.username,
+        // sync other avail fields if telegram provides them
+      }).catch(err => console.error('User sync failed', err));
+    }
+  }, [user]);
 
   const pages = {
     dashboard: <Dashboard />,
     food: <FoodLog />,
     chat: <AIChat />,
     workouts: <Workouts />,
-    profile: <div className="p-4 text-white text-center mt-20">Profile Coming Soon</div>,
+    profile: <Profile />,
   };
 
   return (

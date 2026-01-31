@@ -1,32 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import WorkoutCard from '../components/WorkoutCard';
+import { workouts } from '../services/api';
 
 export default function Workouts() {
-    const [workouts] = useState([
-        {
-            id: 1,
-            type: 'running',
-            duration_minutes: 45,
-            timestamp: new Date().toISOString(),
-            calories_burned: 420,
-            distance: 6.5,
-        },
-        {
-            id: 2,
-            type: 'gym',
-            duration_minutes: 60,
-            timestamp: new Date(Date.now() - 86400000).toISOString(),
-            calories_burned: 380,
-        },
-        {
-            id: 3,
-            type: 'cycling',
-            duration_minutes: 30,
-            timestamp: new Date(Date.now() - 172800000).toISOString(),
-            calories_burned: 250,
-            distance: 12.0,
-        },
-    ]);
+    const [workoutsList, setWorkouts] = useState<any[]>([]);
+    const userId = 1; // TODO: Get from auth context
+
+    useEffect(() => {
+        loadWorkouts();
+    }, []);
+
+    const loadWorkouts = async () => {
+        try {
+            const data = await workouts.getAll(userId);
+            setWorkouts(data);
+        } catch (error) {
+            console.error('Failed to load workouts:', error);
+        }
+    };
+
+    const handleAddWorkout = async () => {
+        // Temporary implementation until UI form exists
+        try {
+            await workouts.create({
+                user_id: userId,
+                description: "New Workout",
+                duration_minutes: 30,
+                intensity: "medium",
+                activity_type: "running",
+                metrics: { distance: 3.5 }
+            });
+            loadWorkouts();
+        } catch (error) {
+            console.error('Failed to create workout:', error);
+        }
+    };
 
     return (
         <div className="min-h-screen p-4 pb-20">
@@ -56,13 +64,16 @@ export default function Workouts() {
 
             {/* Workout Timeline */}
             <div>
-                {workouts.map((workout) => (
+                {workoutsList.map((workout) => (
                     <WorkoutCard key={workout.id} workout={workout} />
                 ))}
             </div>
 
             {/* Floating Add Button */}
-            <button className="fixed bottom-24 right-6 w-14 h-14 bg-gradient-to-br from-teal-500 to-teal-700 rounded-full flex items-center justify-center text-white text-3xl shadow-lg teal-glow hover:scale-110 transition-transform">
+            <button
+                onClick={handleAddWorkout}
+                className="fixed bottom-24 right-6 w-14 h-14 bg-gradient-to-br from-teal-500 to-teal-700 rounded-full flex items-center justify-center text-white text-3xl shadow-lg teal-glow hover:scale-110 transition-transform"
+            >
                 +
             </button>
         </div>

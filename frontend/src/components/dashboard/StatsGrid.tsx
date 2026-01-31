@@ -1,6 +1,17 @@
-import React from 'react';
+interface StatsGridProps {
+    stats: {
+        calories: number;
+        workout_count: number;
+        workout_duration: number;
+    } | null;
+}
 
-const StatsGrid: React.FC = () => {
+const StatsGrid: React.FC<StatsGridProps> = ({ stats }) => {
+    // defaults if stats is null
+    const calories = stats?.calories || 0;
+    const workoutCount = stats?.workout_count || 0;
+
+
     return (
         <div className="grid grid-cols-2 gap-4 p-6">
             {/* Split Daily Calories & Macros Card (Spans 2 columns) */}
@@ -10,7 +21,7 @@ const StatsGrid: React.FC = () => {
                     <div className="flex justify-between items-start">
                         <div>
                             <p className="text-white/60 text-sm font-medium">Energy</p>
-                            <p className="text-white text-2xl font-bold mt-1">1,850 <span className="text-sm font-normal text-white/50 block">/ 2,000</span></p>
+                            <p className="text-white text-2xl font-bold mt-1">{calories.toLocaleString()} <span className="text-sm font-normal text-white/50 block">/ 2,000</span></p>
                         </div>
                     </div>
                     <div className="flex flex-col gap-2 mt-auto">
@@ -71,7 +82,7 @@ const StatsGrid: React.FC = () => {
                 </div>
 
                 <div>
-                    <p className="text-white text-lg font-bold">2 <span className="text-xs font-normal text-white/50">Workouts</span></p>
+                    <p className="text-white text-lg font-bold">{workoutCount} <span className="text-xs font-normal text-white/50">Workouts</span></p>
                 </div>
 
                 <div className="mt-1 pt-3 border-t border-white/5 space-y-1.5">

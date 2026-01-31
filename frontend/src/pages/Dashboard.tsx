@@ -1,9 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useTelegramWebApp } from '../hooks/useTelegramWebApp';
+import { stats } from '../services/api';
 import StatsGrid from '../components/dashboard/StatsGrid';
 import WeeklyCaloriesChart from '../components/dashboard/WeeklyCaloriesChart';
 import WeightProgressChart from '../components/dashboard/WeightProgressChart';
 
 const Dashboard: React.FC = () => {
+    const { user } = useTelegramWebApp();
+    const [dailyStats, setDailyStats] = useState(null);
+    const [history, setHistory] = useState([]);
+
+    useEffect(() => {
+        if (user) {
+            stats.getUserStats(user.id).then(setDailyStats).catch(console.error);
+            stats.getHistory(user.id).then(setHistory).catch(console.error);
+        }
+    }, [user]);
+
     return (
         <div className="relative flex h-auto min-h-screen w-full flex-col bg-gradient-premium group/design-root overflow-x-hidden pb-10 font-display">
             {/* TopAppBar */}
@@ -30,8 +43,8 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Components Grid */}
-            <StatsGrid />
-            <WeeklyCaloriesChart />
+            <StatsGrid stats={dailyStats} />
+            <WeeklyCaloriesChart history={history} />
             <WeightProgressChart />
 
 

@@ -7,19 +7,25 @@ export default function AIChat() {
     ]);
     const [input, setInput] = useState('');
 
-    const handleSend = () => {
+    const handleSend = async () => {
         if (!input.trim()) return;
 
-        setMessages(prev => [...prev, { role: 'user', text: input }]);
+        const userMsg = input;
+        setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
         setInput('');
 
-        // Mock AI response
-        setTimeout(() => {
-            setMessages(prev => [...prev, {
-                role: 'assistant',
-                text: 'Я ще вчуся, але скоро зможу аналізувати твої тренування та харчування тут!'
-            }]);
-        }, 1000);
+        try {
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: 1, message: userMsg }),
+            });
+            const data = await res.json();
+            setMessages(prev => [...prev, { role: 'assistant', text: data }]);
+        } catch (e) {
+            console.error(e);
+            setMessages(prev => [...prev, { role: 'assistant', text: 'Вибач, щось пішло не так.' }]);
+        }
     };
 
     return (
@@ -33,8 +39,8 @@ export default function AIChat() {
                         </div>
 
                         <div className={`p-3 rounded-2xl text-sm max-w-[80%] ${msg.role === 'assistant'
-                                ? 'bg-teal-900/50 text-teal-100 rounded-tl-none'
-                                : 'bg-teal-600 text-white rounded-tr-none'
+                            ? 'bg-teal-900/50 text-teal-100 rounded-tl-none'
+                            : 'bg-teal-600 text-white rounded-tr-none'
                             }`}>
                             {msg.text}
                         </div>
