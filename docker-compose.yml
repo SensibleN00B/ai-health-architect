@@ -9,5 +9,5 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_URL=sqlite:////app/data/health.db
+      - DATABASE_URL=sqlite+aiosqlite:////app/data/health.db
     restart: unless-stopped
