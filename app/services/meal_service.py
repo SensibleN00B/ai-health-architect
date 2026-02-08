@@ -1,13 +1,20 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.db.models import Meal
-from typing import List, Dict, Any
 
 class MealService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def create_meal(self, user_id: int, description: str, calories: float, macros: Dict[str, int], photo_url: str = None) -> Meal:
+    async def create_meal(
+        self,
+        user_id: int,
+        description: str,
+        calories: float,
+        macros: dict[str, int],
+        photo_url: str | None = None,
+    ) -> Meal:
         meal = Meal(
             user_id=user_id,
             description=description,
@@ -20,7 +27,7 @@ class MealService:
         await self.db.refresh(meal)
         return meal
 
-    async def get_user_meals(self, user_id: int, limit: int = 10) -> List[Meal]:
+    async def get_user_meals(self, user_id: int, limit: int = 10) -> list[Meal]:
         stmt = select(Meal).where(Meal.user_id == user_id).order_by(Meal.timestamp.desc()).limit(limit)
         result = await self.db.execute(stmt)
         return result.scalars().all()
