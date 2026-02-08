@@ -1,56 +1,63 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, BigInteger, Text, JSON
-from sqlalchemy.orm import declarative_base
+from __future__ import annotations
+
+from datetime import datetime
+from typing import Any
+
+from sqlalchemy import BigInteger, DateTime, Float, Integer, JSON, String, Text
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.sql import func
 
-Base = declarative_base()
+
+class Base(DeclarativeBase):
+    pass
 
 
 class User(Base):
     __tablename__ = "users"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    telegram_id = Column(BigInteger, unique=True, nullable=False, index=True)
-    username = Column(String(255), nullable=True)
-    age = Column(Integer, nullable=True)
-    weight = Column(Float, nullable=True)
-    height = Column(Integer, nullable=True)
-    goal = Column(String(50), nullable=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    telegram_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=False, index=True)
+    username: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    age: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    weight: Mapped[float | None] = mapped_column(Float, nullable=True)
+    height: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    goal: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), onupdate=func.now())
 
 
 class Meal(Base):
     __tablename__ = "meals"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(BigInteger, nullable=False, index=True)
-    timestamp = Column(DateTime(timezone=True), server_default=func.now())
-    description = Column(Text, nullable=True)
-    calories = Column(Float, nullable=True)
-    macros = Column(JSON, nullable=True)
-    photo_url = Column(String(500), nullable=True)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(BigInteger, nullable=False, index=True)
+    timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    calories: Mapped[float | None] = mapped_column(Float, nullable=True)
+    macros: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+    photo_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
 
 class Workout(Base):
     __tablename__ = "workouts"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(BigInteger, nullable=False, index=True)
-    timestamp = Column(DateTime(timezone=True), server_default=func.now())
-    description = Column(Text, nullable=False)
-    duration_minutes = Column(Integer, nullable=True)
-    intensity = Column(String(20), nullable=True)
-    activity_type = Column(String(50), nullable=True)
-    metrics = Column(JSON, nullable=True)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(BigInteger, nullable=False, index=True)
+    timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    description: Mapped[str] = mapped_column(Text, nullable=False)
+    duration_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    intensity: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    activity_type: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    metrics: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
 
 
 class HealthLog(Base):
     __tablename__ = "health_logs"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(BigInteger, nullable=False, index=True)
-    timestamp = Column(DateTime(timezone=True), server_default=func.now())
-    category = Column(String(50), nullable=False)
-    description = Column(Text, nullable=True)
-    data = Column(JSON, nullable=True)
-    photo_url = Column(String(500), nullable=True)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(BigInteger, nullable=False, index=True)
+    timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    category: Mapped[str] = mapped_column(String(50), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    data: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+    photo_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
