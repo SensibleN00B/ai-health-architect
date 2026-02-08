@@ -1,19 +1,20 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.db.models import HealthLog
-from typing import List, Dict, Any, Optional
+from app.services.types import WeightHistoryItem
 
 class HealthService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
     async def log_health_entry(
-        self, 
-        user_id: int, 
-        category: str, 
-        description: str = None, 
-        data: Dict[str, Any] = None, 
-        photo_url: str = None
+        self,
+        user_id: int,
+        category: str,
+        description: str | None = None,
+        data: dict[str, object] | None = None,
+        photo_url: str | None = None,
     ) -> HealthLog:
         entry = HealthLog(
             user_id=user_id,
@@ -28,11 +29,11 @@ class HealthService:
         return entry
 
     async def get_health_entries(
-        self, 
-        user_id: int, 
-        category: Optional[str] = None,
-        limit: int = 50
-    ) -> List[HealthLog]:
+        self,
+        user_id: int,
+        category: str | None = None,
+        limit: int = 50,
+    ) -> list[HealthLog]:
         stmt = select(HealthLog).where(HealthLog.user_id == user_id)
         
         if category:
@@ -43,7 +44,7 @@ class HealthService:
         result = await self.db.execute(stmt)
         return result.scalars().all()
 
-    async def get_weight_history(self, user_id: int, days: int = 30) -> List[Dict[str, Any]]:
+    async def get_weight_history(self, user_id: int, days: int = 30) -> list[WeightHistoryItem]:
         # Assume category is 'weight' and data contains { 'weight': ... }
         # Or better yet, we might have logs with category="weight".
         stmt = select(HealthLog).where(

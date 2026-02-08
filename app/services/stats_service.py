@@ -1,14 +1,16 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, cast, Date
-from app.db.models import Meal, Workout
 from datetime import date, datetime, timedelta
-from typing import Dict, List, Any
+
+from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.db.models import Meal, Workout
+from app.services.types import StatsSummaryItem
 
 class StatsService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_daily_summary(self, user_id: int, day: date = None) -> Dict[str, Any]:
+    async def get_daily_summary(self, user_id: int, day: date | None = None) -> StatsSummaryItem:
         if day is None:
             day = datetime.now().date()
         
@@ -40,7 +42,7 @@ class StatsService:
             "workout_duration": duration or 0
         }
 
-    async def get_history(self, user_id: int, days: int = 7) -> List[Dict[str, Any]]:
+    async def get_history(self, user_id: int, days: int = 7) -> list[StatsSummaryItem]:
         # This approach is inefficient (N+1 queries), but simple for MVP.
         # Better: Group by date in SQL.
         # SQLite support for date grouping can be tricky with timezone aware datetimes, 
