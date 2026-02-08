@@ -1,13 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.db.database import get_db
-from app.services.user_service import UserService
+from app.db.models import User
 from app.schemas.user import UserCreate, UserResponse
+from app.services.user_service import UserService
 
 router = APIRouter()
 
 @router.post("/sync", response_model=UserResponse)
-async def sync_user(user_in: UserCreate, db: AsyncSession = Depends(get_db)):
+async def sync_user(
+    user_in: UserCreate,
+    db: AsyncSession = Depends(get_db),
+) -> UserResponse:
     """
     Syncs user data from Telegram. Creates user if not exists, updates if exists.
     """
@@ -28,7 +33,10 @@ class UserUpdate(BaseModel):
     goal: str | None = None
 
 @router.put("/profile")
-async def update_profile(data: UserUpdate, db: AsyncSession = Depends(get_db)):
+async def update_profile(
+    data: UserUpdate,
+    db: AsyncSession = Depends(get_db),
+) -> User | None:
     service = UserService(db)
     return await service.update_user(
         telegram_id=data.telegram_id,

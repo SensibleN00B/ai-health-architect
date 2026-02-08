@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List
+
 from app.db.database import get_db
 from app.schemas.workout import WorkoutCreate, WorkoutResponse
 from app.services.workout_service import WorkoutService
@@ -8,7 +8,10 @@ from app.services.workout_service import WorkoutService
 router = APIRouter()
 
 @router.post("/", response_model=WorkoutResponse, status_code=status.HTTP_201_CREATED)
-async def create_workout(workout: WorkoutCreate, db: AsyncSession = Depends(get_db)):
+async def create_workout(
+    workout: WorkoutCreate,
+    db: AsyncSession = Depends(get_db),
+) -> WorkoutResponse:
     service = WorkoutService(db)
     return await service.create_workout(
         user_id=workout.user_id,
@@ -19,7 +22,10 @@ async def create_workout(workout: WorkoutCreate, db: AsyncSession = Depends(get_
         metrics=workout.metrics
     )
 
-@router.get("/{user_id}", response_model=List[WorkoutResponse])
-async def get_workouts(user_id: int, db: AsyncSession = Depends(get_db)):
+@router.get("/{user_id}", response_model=list[WorkoutResponse])
+async def get_workouts(
+    user_id: int,
+    db: AsyncSession = Depends(get_db),
+) -> list[WorkoutResponse]:
     service = WorkoutService(db)
     return await service.get_workouts(user_id)
