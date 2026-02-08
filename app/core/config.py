@@ -1,9 +1,15 @@
-from pydantic_settings import BaseSettings
 from pydantic import SecretStr
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Literal
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
+
     BOT_TOKEN: SecretStr
     
     AI_PROVIDER: Literal["gemini", "openai"] = "gemini"
@@ -15,10 +21,4 @@ class Settings(BaseSettings):
     
     DATABASE_URL: str = "sqlite+aiosqlite:///./health.db"
     
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        extra = "ignore"
-
-
 settings = Settings()  # pyright: ignore[reportCallIssue]

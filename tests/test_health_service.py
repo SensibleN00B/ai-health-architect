@@ -6,6 +6,7 @@ from app.db.models import HealthLog
 @pytest.mark.asyncio
 async def test_log_health_entry():
     mock_session = AsyncMock()
+    mock_session.add = MagicMock()
     service = HealthService(mock_session)
     
     entry = await service.log_health_entry(

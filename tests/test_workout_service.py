@@ -6,6 +6,7 @@ from unittest.mock import AsyncMock, MagicMock
 @pytest.mark.asyncio
 async def test_create_workout():
     mock_session = AsyncMock()
+    mock_session.add = MagicMock()
     service = WorkoutService(mock_session)
     workout_data = {
         "user_id": 12345,

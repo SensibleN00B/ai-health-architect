@@ -7,6 +7,7 @@ from unittest.mock import AsyncMock, MagicMock
 async def test_create_meal():
     # Mock database session
     mock_session = AsyncMock()
+    mock_session.add = MagicMock()
     
     service = MealService(mock_session)
     meal_data = {

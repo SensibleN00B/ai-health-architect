@@ -6,6 +6,7 @@ from app.db.models import User
 @pytest.mark.asyncio
 async def test_get_or_create_user_creates_new():
     mock_session = AsyncMock()
+    mock_session.add = MagicMock()
     # Mock execute result for "get" query to return None first
     mock_result = MagicMock()
     mock_result.scalar_one_or_none.return_value = None

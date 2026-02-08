@@ -8,6 +8,7 @@ from datetime import datetime
 @pytest.fixture
 def mock_db_session():
     mock = AsyncMock()
+    mock.add = MagicMock()
     # Mock refresh to set ID and timestamp
     def mock_refresh(instance):
         instance.id = 1
