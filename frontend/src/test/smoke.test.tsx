@@ -1,7 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import App from '../App';
+import { renderWithUser } from './renderWithUser';
 
 test('renders bottom navigation', () => {
-  render(<App />);
+  renderWithUser(<App />);
   expect(screen.getByText('person')).toBeInTheDocument();
 });
