@@ -18,7 +18,7 @@ app.add_middleware(
 )
 
 @app.get("/api/health")
-async def health_check():
+async def health_check() -> dict[str, str]:
     return {"status": "healthy"}
 
 static_dir = Path(__file__).parent / "static"
@@ -26,7 +26,7 @@ if static_dir.exists():
     app.mount("/assets", StaticFiles(directory=static_dir / "assets"), name="assets")
     
     @app.get("/{full_path:path}")
-    async def serve_spa(full_path: str):
+    async def serve_spa(full_path: str) -> FileResponse | dict[str, str] | tuple[dict[str, str], int]:
         if full_path.startswith("api/"):
             return {"error": "Not found"}, 404
         

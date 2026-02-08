@@ -1,4 +1,4 @@
-from aiogram import Router, F
+from aiogram import Dispatcher, Router, F
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from aiogram.filters import CommandStart
 from app.core.ai import ai_client
@@ -6,11 +6,11 @@ from app.db import AsyncSessionLocal, User, Meal, Workout, HealthLog
 from sqlalchemy import select
 
 router = Router()
-photo_storage = {}
+photo_storage: dict[int, bytes] = {}
 
 
 @router.message(CommandStart())
-async def cmd_start(message: Message):
+async def cmd_start(message: Message) -> None:
     async with AsyncSessionLocal() as session:
         result = await session.execute(
             select(User).where(User.telegram_id == message.from_user.id)
@@ -35,7 +35,7 @@ async def cmd_start(message: Message):
 
 
 @router.message(F.text == "/webapp")
-async def cmd_webapp(message: Message):
+async def cmd_webapp(message: Message) -> None:
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(
             text="🏥 Open Health App",
@@ -50,7 +50,7 @@ async def cmd_webapp(message: Message):
 
 
 @router.message(F.photo)
-async def handle_photo(message: Message):
+async def handle_photo(message: Message) -> None:
     await message.answer("🔍 Аналізую фото...")
     
     photo = message.photo[-1]
@@ -79,7 +79,7 @@ async def handle_photo(message: Message):
 
 
 @router.callback_query(F.data.startswith("type:"))
-async def handle_type_selection(callback: CallbackQuery):
+async def handle_type_selection(callback: CallbackQuery) -> None:
     photo_type = callback.data.split(":")[1]
     image_data = photo_storage.get(callback.from_user.id)
     
@@ -94,7 +94,7 @@ async def handle_type_selection(callback: CallbackQuery):
     del photo_storage[callback.from_user.id]
 
 
-async def process_photo(user_id: int, image_data: bytes, photo_type: str, message: Message):
+async def process_photo(user_id: int, image_data: bytes, photo_type: str, message: Message) -> None:
     if photo_type == "food":
         result = await ai_client.analyze_food_image(image_data)
         
@@ -146,10 +146,10 @@ async def process_photo(user_id: int, image_data: bytes, photo_type: str, messag
 
 
 @router.message(F.text & ~F.text.startswith("/"))
-async def handle_text(message: Message):
+async def handle_text(message: Message) -> None:
     response = await ai_client.chat(message.text)
     await message.answer(response)
 
 
-def register_handlers(dp):
+def register_handlers(dp: Dispatcher) -> None:
     dp.include_router(router)

@@ -12,7 +12,7 @@ bot = Bot(
 dp = Dispatcher()
 
 
-async def start_bot():
+async def start_bot() -> None:
     register_handlers(dp)
     await dp.start_polling(bot)
 
