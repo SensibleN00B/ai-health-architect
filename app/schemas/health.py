@@ -1,20 +1,27 @@
-from pydantic import BaseModel
-from typing import Optional, Dict, Any, List
 from datetime import datetime
+
+from pydantic import BaseModel, ConfigDict
+
 
 class HealthLogBase(BaseModel):
     category: str
-    description: Optional[str] = None
-    data: Optional[Dict[str, Any]] = None
-    photo_url: Optional[str] = None
+    description: str | None = None
+    data: dict[str, object] | None = None
+    photo_url: str | None = None
+
 
 class HealthLogCreate(HealthLogBase):
     user_id: int
+
 
 class HealthLogResponse(HealthLogBase):
     id: int
     user_id: int
     timestamp: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
+
+
+class WeightHistoryItem(BaseModel):
+    date: str
+    weight: float
