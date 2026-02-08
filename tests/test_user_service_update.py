@@ -29,6 +29,7 @@ async def test_update_user_fields():
         goal="muscle_gain"
     )
     
+    assert updated is not None
     assert updated.age == 30
     assert updated.weight == 75.5
     assert updated.height == 180

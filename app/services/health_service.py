@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models import HealthLog
-from app.services.types import WeightHistoryItem
+from app.services.types import WeightHistoryItemData
 
 class HealthService:
     def __init__(self, db: AsyncSession):
@@ -42,9 +42,9 @@ class HealthService:
         stmt = stmt.order_by(HealthLog.timestamp.desc()).limit(limit)
         
         result = await self.db.execute(stmt)
-        return result.scalars().all()
+        return list(result.scalars().all())
 
-    async def get_weight_history(self, user_id: int, days: int = 30) -> list[WeightHistoryItem]:
+    async def get_weight_history(self, user_id: int, days: int = 30) -> list[WeightHistoryItemData]:
         # Assume category is 'weight' and data contains { 'weight': ... }
         # Or better yet, we might have logs with category="weight".
         stmt = select(HealthLog).where(
@@ -64,7 +64,7 @@ class HealthService:
         result = await self.db.execute(stmt)
         logs = result.scalars().all()
         
-        history = []
+        history: list[WeightHistoryItemData] = []
         for log in logs:
             if log.data and "weight" in log.data:
                 history.append({

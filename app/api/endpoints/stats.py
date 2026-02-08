@@ -17,7 +17,8 @@ async def get_user_stats(
 ) -> StatsSummary:
     service = StatsService(db)
     query_date = date.fromisoformat(date_str) if date_str else None
-    return await service.get_daily_summary(user_id, query_date)
+    summary = await service.get_daily_summary(user_id, query_date)
+    return StatsSummary.model_validate(summary)
 
 @router.get("/{user_id}/history", response_model=list[StatsSummary])
 async def get_user_history(
@@ -26,4 +27,5 @@ async def get_user_history(
     db: AsyncSession = Depends(get_db),
 ) -> list[StatsSummary]:
     service = StatsService(db)
-    return await service.get_history(user_id, days)
+    history = await service.get_history(user_id, days)
+    return [StatsSummary.model_validate(item) for item in history]

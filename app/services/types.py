@@ -8,6 +8,6 @@ class StatsSummaryItem(TypedDict):
     workout_duration: int
 
 
-class WeightHistoryItem(TypedDict):
+class WeightHistoryItemData(TypedDict):
     date: str
     weight: float

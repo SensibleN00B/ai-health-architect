@@ -13,7 +13,9 @@
   "strict": [
     "app/core",
     "app/services",
-    "app/schemas"
+    "app/schemas",
+    "app/api",
+    "app/bot"
   ],
   "reportMissingTypeStubs": "none"
 }

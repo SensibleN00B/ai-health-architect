@@ -14,7 +14,7 @@ dp = Dispatcher()
 
 async def start_bot() -> None:
     register_handlers(dp)
-    await dp.start_polling(bot)
+    await dp.start_polling(bot)  # pyright: ignore[reportUnknownMemberType]
 
 
 if __name__ == "__main__":

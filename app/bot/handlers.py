@@ -11,6 +11,9 @@ photo_storage: dict[int, bytes] = {}
 
 @router.message(CommandStart())
 async def cmd_start(message: Message) -> None:
+    if message.from_user is None:
+        return
+
     async with AsyncSessionLocal() as session:
         result = await session.execute(
             select(User).where(User.telegram_id == message.from_user.id)
@@ -51,11 +54,20 @@ async def cmd_webapp(message: Message) -> None:
 
 @router.message(F.photo)
 async def handle_photo(message: Message) -> None:
+    if message.from_user is None or message.bot is None:
+        return
+    if not message.photo:
+        return
+
     await message.answer("🔍 Аналізую фото...")
     
     photo = message.photo[-1]
     file = await message.bot.get_file(photo.file_id)
+    if file.file_path is None:
+        return
     photo_bytes = await message.bot.download_file(file.file_path)
+    if photo_bytes is None:
+        return
     image_data = photo_bytes.read()
     
     classification = await ai_client.classify_photo(image_data)
@@ -80,6 +92,9 @@ async def handle_photo(message: Message) -> None:
 
 @router.callback_query(F.data.startswith("type:"))
 async def handle_type_selection(callback: CallbackQuery) -> None:
+    if callback.data is None:
+        return
+
     photo_type = callback.data.split(":")[1]
     image_data = photo_storage.get(callback.from_user.id)
     
@@ -88,8 +103,10 @@ async def handle_type_selection(callback: CallbackQuery) -> None:
         return
     
     await callback.answer()
+    if not isinstance(callback.message, Message):
+        return
     await callback.message.edit_text("✅ Дякую! Обробляю...")
-    
+
     await process_photo(callback.from_user.id, image_data, photo_type, callback.message)
     del photo_storage[callback.from_user.id]
 
@@ -147,6 +164,8 @@ async def process_photo(user_id: int, image_data: bytes, photo_type: str, messag
 
 @router.message(F.text & ~F.text.startswith("/"))
 async def handle_text(message: Message) -> None:
+    if message.text is None:
+        return
     response = await ai_client.chat(message.text)
     await message.answer(response)
 

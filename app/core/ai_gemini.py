@@ -1,4 +1,5 @@
 import re
+from typing import Any, cast, Literal
 
 from google import genai
 
@@ -17,7 +18,7 @@ class GeminiAI(AIProvider):
         if not settings.GEMINI_API_KEY:
             raise ValueError("GEMINI_API_KEY not configured")
         
-        self.client = genai.Client(api_key=settings.GEMINI_API_KEY.get_secret_value())
+        self.client: Any = genai.Client(api_key=settings.GEMINI_API_KEY.get_secret_value())
         self.model_name = "gemini-2.0-flash-exp"
     
     async def classify_photo(self, image_bytes: bytes) -> ClassificationResult:
@@ -42,7 +43,8 @@ class GeminiAI(AIProvider):
             ]
         )
         
-        return self._parse_classification_response(response.text)
+        response_text = response.text or ""
+        return self._parse_classification_response(response_text)
     
     async def analyze_food_image(self, image_bytes: bytes) -> FoodAnalysisResult:
         prompt = """
@@ -67,7 +69,8 @@ class GeminiAI(AIProvider):
             ]
         )
         
-        return self._parse_food_response(response.text)
+        response_text = response.text or ""
+        return self._parse_food_response(response_text)
     
     async def chat(self, user_message: str, context: str | None = None) -> str:
         system_instruction = """
@@ -88,11 +91,11 @@ class GeminiAI(AIProvider):
             }
         )
         
-        return response.text
+        return response.text or ""
     
     def _parse_classification_response(self, response_text: str) -> ClassificationResult:
         """Parse classification response"""
-        result = {
+        result: ClassificationResult = {
             "type": "other",
             "confidence": "low",
             "reasoning": ""
@@ -103,11 +106,17 @@ class GeminiAI(AIProvider):
             if line.startswith("Type:"):
                 type_value = line.replace("Type:", "").strip().lower()
                 if type_value in ["food", "workout", "health", "other"]:
-                    result["type"] = type_value
+                    result["type"] = cast(
+                        Literal["food", "workout", "health", "other"],
+                        type_value,
+                    )
             elif line.startswith("Confidence:"):
                 conf_value = line.replace("Confidence:", "").strip().lower()
                 if conf_value in ["high", "medium", "low"]:
-                    result["confidence"] = conf_value
+                    result["confidence"] = cast(
+                        Literal["high", "medium", "low"],
+                        conf_value,
+                    )
             elif line.startswith("Reasoning:"):
                 result["reasoning"] = line.replace("Reasoning:", "").strip()
         
@@ -115,7 +124,7 @@ class GeminiAI(AIProvider):
     
     def _parse_food_response(self, response_text: str) -> FoodAnalysisResult:
         """Parse Gemini response into structured data"""
-        result = {
+        result: FoodAnalysisResult = {
             "description": "",
             "calories": 0.0,
             "macros": {"protein": 0, "carbs": 0, "fat": 0}
@@ -181,7 +190,8 @@ class GeminiAI(AIProvider):
             ]
         )
         
-        return self._parse_workout_response(response.text)
+        response_text = response.text or ""
+        return self._parse_workout_response(response_text)
 
     async def analyze_health_image(self, image_bytes: bytes) -> HealthAnalysisResult:
         prompt = """
@@ -204,10 +214,11 @@ class GeminiAI(AIProvider):
             ]
         )
         
-        return self._parse_health_response(response.text)
+        response_text = response.text or ""
+        return self._parse_health_response(response_text)
 
     def _parse_workout_response(self, response_text: str) -> WorkoutAnalysisResult:
-        result = {
+        result: WorkoutAnalysisResult = {
             "activity": "unknown",
             "duration_minutes": 0,
             "distance_km": 0.0,
@@ -251,7 +262,7 @@ class GeminiAI(AIProvider):
         return result
 
     def _parse_health_response(self, response_text: str) -> HealthAnalysisResult:
-        result = {
+        result: HealthAnalysisResult = {
             "category": "unknown",
             "data": {},
             "description": ""

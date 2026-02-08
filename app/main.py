@@ -25,7 +25,7 @@ static_dir = Path(__file__).parent / "static"
 if static_dir.exists():
     app.mount("/assets", StaticFiles(directory=static_dir / "assets"), name="assets")
     
-    @app.get("/{full_path:path}")
+    @app.get("/{full_path:path}", response_model=None)
     async def serve_spa(full_path: str) -> FileResponse | dict[str, str] | tuple[dict[str, str], int]:
         if full_path.startswith("api/"):
             return {"error": "Not found"}, 404

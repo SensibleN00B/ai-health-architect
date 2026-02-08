@@ -18,6 +18,7 @@ async def test_log_health_entry():
     
     assert isinstance(entry, HealthLog)
     assert entry.category == "weight"
+    assert entry.data is not None
     assert entry.data["value"] == 75.5
     mock_session.add.assert_called_once()
     mock_session.commit.assert_called_once()
@@ -36,4 +37,5 @@ async def test_get_health_entries():
     entries = await service.get_health_entries(user_id=123, category="weight")
     
     assert len(entries) == 2
+    assert entries[1].data is not None
     assert entries[1].data["val"] == 71

@@ -34,7 +34,7 @@ class WorkoutService:
     async def get_workouts(self, user_id: int, limit: int = 10) -> list[Workout]:
         stmt = select(Workout).where(Workout.user_id == user_id).order_by(Workout.timestamp.desc()).limit(limit)
         result = await self.db.execute(stmt)
-        return result.scalars().all()
+        return list(result.scalars().all())
 
     async def get_workout_by_id(self, workout_id: int) -> Workout | None:
         result = await self.db.execute(select(Workout).where(Workout.id == workout_id))

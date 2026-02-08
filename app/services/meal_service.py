@@ -30,4 +30,4 @@ class MealService:
     async def get_user_meals(self, user_id: int, limit: int = 10) -> list[Meal]:
         stmt = select(Meal).where(Meal.user_id == user_id).order_by(Meal.timestamp.desc()).limit(limit)
         result = await self.db.execute(stmt)
-        return result.scalars().all()
+        return list(result.scalars().all())

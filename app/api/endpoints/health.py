@@ -13,13 +13,14 @@ async def log_health_entry(
     db: AsyncSession = Depends(get_db),
 ) -> HealthLogResponse:
     service = HealthService(db)
-    return await service.log_health_entry(
+    created_entry = await service.log_health_entry(
         user_id=entry.user_id,
         category=entry.category,
         description=entry.description,
         data=entry.data,
-        photo_url=entry.photo_url
+        photo_url=entry.photo_url,
     )
+    return HealthLogResponse.model_validate(created_entry)
 
 @router.get("/{user_id}", response_model=list[HealthLogResponse])
 async def get_health_history(
@@ -28,7 +29,8 @@ async def get_health_history(
     db: AsyncSession = Depends(get_db)
 ) -> list[HealthLogResponse]:
     service = HealthService(db)
-    return await service.get_health_entries(user_id, category)
+    entries = await service.get_health_entries(user_id, category)
+    return [HealthLogResponse.model_validate(item) for item in entries]
 
 @router.get("/history/{user_id}", response_model=list[WeightHistoryItem])
 async def get_weight_history_endpoint(
@@ -37,4 +39,5 @@ async def get_weight_history_endpoint(
     db: AsyncSession = Depends(get_db)
 ) -> list[WeightHistoryItem]:
     service = HealthService(db)
-    return await service.get_weight_history(user_id, days)
+    history = await service.get_weight_history(user_id, days)
+    return [WeightHistoryItem.model_validate(item) for item in history]

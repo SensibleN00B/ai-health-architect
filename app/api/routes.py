@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
+from fastapi import APIRouter, UploadFile, File, Depends
 from app.core.ai import ai_client
 from app.core.ai_types import (
     ClassificationResult,
@@ -50,7 +50,7 @@ class MealCreate(BaseModel):
     user_id: int
     description: str
     calories: float
-    macros: dict
+    macros: dict[str, int]
     photo_url: str | None = None
 
 @router.post("/meals")
@@ -77,4 +77,3 @@ class ChatRequest(BaseModel):
 async def chat(request: ChatRequest, db: AsyncSession = Depends(get_db)):
     service = ChatService(db, ai_client)
     return await service.chat(request.user_id, request.message)
-

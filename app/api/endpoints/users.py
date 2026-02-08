@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.database import get_db
@@ -21,18 +22,16 @@ async def sync_user(
         telegram_id=user_in.telegram_id,
         username=user_in.username
     )
-    return user
-
-from pydantic import BaseModel
+    return UserResponse.model_validate(user)
 
 class UserUpdate(BaseModel):
     telegram_id: int
     age: int | None = None
     weight: float | None = None
-    height: float | None = None
+    height: int | None = None
     goal: str | None = None
 
-@router.put("/profile")
+@router.put("/profile", response_model=None)
 async def update_profile(
     data: UserUpdate,
     db: AsyncSession = Depends(get_db),

@@ -13,7 +13,7 @@ async def create_workout(
     db: AsyncSession = Depends(get_db),
 ) -> WorkoutResponse:
     service = WorkoutService(db)
-    return await service.create_workout(
+    workout_model = await service.create_workout(
         user_id=workout.user_id,
         description=workout.description,
         duration_minutes=workout.duration_minutes,
@@ -21,6 +21,7 @@ async def create_workout(
         activity_type=workout.activity_type,
         metrics=workout.metrics
     )
+    return WorkoutResponse.model_validate(workout_model)
 
 @router.get("/{user_id}", response_model=list[WorkoutResponse])
 async def get_workouts(
@@ -28,4 +29,5 @@ async def get_workouts(
     db: AsyncSession = Depends(get_db),
 ) -> list[WorkoutResponse]:
     service = WorkoutService(db)
-    return await service.get_workouts(user_id)
+    workouts = await service.get_workouts(user_id)
+    return [WorkoutResponse.model_validate(item) for item in workouts]

@@ -43,4 +43,5 @@ async def test_meal_model_creation(test_db_engine, test_db_session):
     
     assert meal.id is not None
     assert meal.calories == 450.5
+    assert meal.macros is not None
     assert meal.macros["protein"] == 35

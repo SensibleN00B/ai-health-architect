@@ -48,7 +48,7 @@ class StatsService:
         # SQLite support for date grouping can be tricky with timezone aware datetimes, 
         # but let's try a loop for the last N days for simplicity and reliability now.
         
-        history = []
+        history: list[StatsSummaryItem] = []
         today = datetime.now().date()
         
         for i in range(days):
