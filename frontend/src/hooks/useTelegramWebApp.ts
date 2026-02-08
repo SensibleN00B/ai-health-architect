@@ -1,56 +1,58 @@
 import { useEffect, useState } from 'react';
 
+export interface TelegramUser {
+  id: number;
+  first_name: string;
+  last_name?: string;
+  username?: string;
+  language_code?: string;
+}
+
 interface TelegramWebApp {
-    initData: string;
-    initDataUnsafe: {
-        user?: {
-            id: number;
-            first_name: string;
-            last_name?: string;
-            username?: string;
-            language_code?: string;
-        };
-    };
-    ready: () => void;
-    expand: () => void;
-    MainButton: {
-        text: string;
-        color: string;
-        textColor: string;
-        isVisible: boolean;
-        isActive: boolean;
-        show: () => void;
-        hide: () => void;
-        onClick: (callback: () => void) => void;
-    };
-    setBackgroundColor: (color: string) => void;
-    setHeaderColor: (color: string) => void;
+  initData: string;
+  initDataUnsafe: {
+    user?: TelegramUser;
+  };
+  ready: () => void;
+  expand: () => void;
+  MainButton: {
+    text: string;
+    color: string;
+    textColor: string;
+    isVisible: boolean;
+    isActive: boolean;
+    show: () => void;
+    hide: () => void;
+    onClick: (callback: () => void) => void;
+  };
+  setBackgroundColor: (color: string) => void;
+  setHeaderColor: (color: string) => void;
 }
 
 declare global {
-    interface Window {
-        Telegram?: {
-            WebApp: TelegramWebApp;
-        };
-    }
+  interface Window {
+    Telegram?: {
+      WebApp: TelegramWebApp;
+    };
+  }
 }
 
 export function useTelegramWebApp() {
-    const [webApp, setWebApp] = useState<TelegramWebApp | null>(null);
-    const [user, setUser] = useState<any>(null);
+  const [webApp, setWebApp] = useState<TelegramWebApp | null>(null);
+  const [user, setUser] = useState<TelegramUser | null>(null);
 
-    useEffect(() => {
-        const tg = window.Telegram?.WebApp;
-        if (tg) {
-            tg.ready();
-            tg.expand();
-            tg.setBackgroundColor('#031716');
-            tg.setHeaderColor('secondary_bg_color');
+  useEffect(() => {
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      tg.setBackgroundColor('#031716');
+      tg.setHeaderColor('secondary_bg_color');
 
-            setWebApp(tg);
-            setUser(tg.initDataUnsafe.user);
-        }
-    }, []);
+      setWebApp(tg);
+      setUser(tg.initDataUnsafe.user ?? null);
+    }
+  }, []);
 
-    return { webApp, user, isInTelegram: !!webApp };
+  return { webApp, user, isInTelegram: !!webApp };
 }
