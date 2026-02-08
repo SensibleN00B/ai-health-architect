@@ -1,0 +1,19 @@
+{
+  "pythonVersion": "3.12",
+  "typeCheckingMode": "basic",
+  "include": ["app", "tests"],
+  "exclude": [
+    "**/__pycache__",
+    "frontend",
+    "data",
+    "alembic",
+    "stitch_screens",
+    "stitch_dashboard.html"
+  ],
+  "strict": [
+    "app/core",
+    "app/services",
+    "app/schemas"
+  ],
+  "reportMissingTypeStubs": "none"
+}

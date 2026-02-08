@@ -74,6 +74,13 @@ AI Health Architect is a comprehensive health tracking platform that combines AI
    python -m app.bot.bot
    ```
 
+### Type Checking (Pyright)
+
+```bash
+python -m pip install -r requirements-dev.txt
+python -m pyright
+```
+
 ## 🏗 Architecture
 
 The project follows a modular structure:
