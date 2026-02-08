@@ -1,6 +1,11 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
 from app.core.ai import ai_client
-from typing import Dict, Any
+from app.core.ai_types import (
+    ClassificationResult,
+    FoodAnalysisResult,
+    HealthAnalysisResult,
+    WorkoutAnalysisResult,
+)
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.database import get_db
 from app.services.meal_service import MealService
@@ -16,26 +21,26 @@ router.include_router(users.router, prefix="/users", tags=["users"])
 router.include_router(health.router, prefix="/health", tags=["health"])
 
 @router.post("/analyze/classify")
-async def classify_photo(file: UploadFile = File(...)) -> Dict[str, Any]:
+async def classify_photo(file: UploadFile = File(...)) -> ClassificationResult:
     content = await file.read()
     # TODO: Add validation for mime type if needed
     result = await ai_client.classify_photo(content)
     return result
 
 @router.post("/analyze/food")
-async def analyze_food(file: UploadFile = File(...)) -> Dict[str, Any]:
+async def analyze_food(file: UploadFile = File(...)) -> FoodAnalysisResult:
     content = await file.read()
     result = await ai_client.analyze_food_image(content)
     return result
 
 @router.post("/analyze/workout")
-async def analyze_workout(file: UploadFile = File(...)) -> Dict[str, Any]:
+async def analyze_workout(file: UploadFile = File(...)) -> WorkoutAnalysisResult:
     content = await file.read()
     result = await ai_client.analyze_workout_image(content)
     return result
 
 @router.post("/analyze/health")
-async def analyze_health(file: UploadFile = File(...)) -> Dict[str, Any]:
+async def analyze_health(file: UploadFile = File(...)) -> HealthAnalysisResult:
     content = await file.read()
     result = await ai_client.analyze_health_image(content)
     result = await ai_client.analyze_health_image(content)
@@ -72,5 +77,4 @@ class ChatRequest(BaseModel):
 async def chat(request: ChatRequest, db: AsyncSession = Depends(get_db)):
     service = ChatService(db, ai_client)
     return await service.chat(request.user_id, request.message)
-
 

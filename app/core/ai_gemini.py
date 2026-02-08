@@ -1,8 +1,15 @@
-from google import genai
-from app.core.ai_base import AIProvider
-from app.core.config import settings
-from typing import Dict
 import re
+
+from google import genai
+
+from app.core.ai_base import AIProvider
+from app.core.ai_types import (
+    ClassificationResult,
+    FoodAnalysisResult,
+    HealthAnalysisResult,
+    WorkoutAnalysisResult,
+)
+from app.core.config import settings
 
 
 class GeminiAI(AIProvider):
@@ -13,7 +20,7 @@ class GeminiAI(AIProvider):
         self.client = genai.Client(api_key=settings.GEMINI_API_KEY.get_secret_value())
         self.model_name = "gemini-2.0-flash-exp"
     
-    async def classify_photo(self, image_bytes: bytes) -> Dict:
+    async def classify_photo(self, image_bytes: bytes) -> ClassificationResult:
         prompt = """
         Classify this image into ONE of these categories:
         1. FOOD - any meal, snack, beverage, or food item
@@ -37,7 +44,7 @@ class GeminiAI(AIProvider):
         
         return self._parse_classification_response(response.text)
     
-    async def analyze_food_image(self, image_bytes: bytes) -> Dict:
+    async def analyze_food_image(self, image_bytes: bytes) -> FoodAnalysisResult:
         prompt = """
         Analyze this food image and provide:
         1. Description of the food items
@@ -83,7 +90,7 @@ class GeminiAI(AIProvider):
         
         return response.text
     
-    def _parse_classification_response(self, response_text: str) -> Dict:
+    def _parse_classification_response(self, response_text: str) -> ClassificationResult:
         """Parse classification response"""
         result = {
             "type": "other",
@@ -106,7 +113,7 @@ class GeminiAI(AIProvider):
         
         return result
     
-    def _parse_food_response(self, response_text: str) -> Dict:
+    def _parse_food_response(self, response_text: str) -> FoodAnalysisResult:
         """Parse Gemini response into structured data"""
         result = {
             "description": "",
@@ -149,7 +156,7 @@ class GeminiAI(AIProvider):
         
         return result
     
-    async def analyze_workout_image(self, image_bytes: bytes) -> Dict:
+    async def analyze_workout_image(self, image_bytes: bytes) -> WorkoutAnalysisResult:
         prompt = """
         Analyze this workout-related image:
         1. Activity type (running, cycling, gym, yoga, etc.)
@@ -176,7 +183,7 @@ class GeminiAI(AIProvider):
         
         return self._parse_workout_response(response.text)
 
-    async def analyze_health_image(self, image_bytes: bytes) -> Dict:
+    async def analyze_health_image(self, image_bytes: bytes) -> HealthAnalysisResult:
         prompt = """
         Analyze this health/progress image:
         1. Category (weight, body measurements, progress photo, etc.)
@@ -199,7 +206,7 @@ class GeminiAI(AIProvider):
         
         return self._parse_health_response(response.text)
 
-    def _parse_workout_response(self, response_text: str) -> Dict:
+    def _parse_workout_response(self, response_text: str) -> WorkoutAnalysisResult:
         result = {
             "activity": "unknown",
             "duration_minutes": 0,
@@ -243,7 +250,7 @@ class GeminiAI(AIProvider):
         
         return result
 
-    def _parse_health_response(self, response_text: str) -> Dict:
+    def _parse_health_response(self, response_text: str) -> HealthAnalysisResult:
         result = {
             "category": "unknown",
             "data": {},
