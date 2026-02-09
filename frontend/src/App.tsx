@@ -6,23 +6,24 @@ import Workouts from './pages/Workouts';
 import Profile from './pages/Profile';
 import './index.css';
 
-function App() {
-  const [currentPage, setCurrentPage] = useState<
-    'dashboard' | 'food' | 'chat' | 'workouts' | 'profile'
-  >('dashboard');
+type PageKey = 'dashboard' | 'food' | 'chat' | 'workouts' | 'profile';
 
-  const pages = {
+function App() {
+  const [currentPage, setCurrentPage] = useState<PageKey>('dashboard');
+
+  const pages: Record<PageKey, JSX.Element> = {
     dashboard: <Dashboard />,
     food: <FoodLog />,
     chat: <AIChat />,
     workouts: <Workouts />,
     profile: <Profile />,
   };
+  const currentView = pages[currentPage];
 
   return (
     <div className="min-h-screen bg-gradient-premium font-display text-white">
       {/* Main Content */}
-      <div className="w-full h-full pb-24">{pages[currentPage]}</div>
+      <div className="w-full h-full pb-24">{currentView}</div>
 
       {/* Sticky Bottom Navigation (iOS style) */}
       <div className="fixed bottom-0 left-0 right-0 glass-card border-t border-white/10 px-8 py-4 flex justify-between items-center rounded-t-3xl z-50">

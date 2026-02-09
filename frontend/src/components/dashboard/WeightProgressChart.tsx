@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useUser } from '../../context/UserContext';
-import { health } from '../../services/api';
-
-type WeightHistoryItem = {
-  date: string;
-  weight: number;
-};
+import { health, type WeightHistoryItem } from '../../services/api';
 
 const WeightProgressChart: React.FC = () => {
   const { user } = useUser();

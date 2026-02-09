@@ -56,6 +56,11 @@ export interface HealthEntry {
   photo_url?: string | null;
 }
 
+export interface WeightHistoryItem {
+  date: string;
+  weight: number;
+}
+
 export const workouts = {
   create: async (workout: Workout) => {
     const response = await api.post('/workouts', workout);
@@ -124,7 +129,7 @@ export const health = {
   },
   getWeightHistory: async (userId: number, days: number = 30) => {
     const response = await api.get(`/health/history/${userId}`, { params: { days } });
-    return response.data;
+    return response.data as WeightHistoryItem[];
   },
 };
 
